@@ -21,23 +21,27 @@ def make_map_rectangle(longitude_center, latitude_center, degrees_from_center=0.
         }
     return extent
 
+def subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center):
+    longmin = xx+degrees_from_center
+    latmin = yy+degrees_from_center
+    longmax = xx-degrees_from_center
+    latmax = yy-degrees_from_center
+    print("{}, {}, {}, {}".format(longmin, longmax, latmin, latmax))
+    return (longmin, longmax, latmin, latmax)
+
 def main():
     base_dir = '/home/sobloo/hack-tbd/original-sobloo'
     conf_file = base_dir + "/eodagconf.yml"
     dag = EODataAccessGateway(user_conf_file_path = conf_file)
     product_type = 'S2_MSI_L1C'
-    extent = make_map_rectangle(longitude_center=18.330000, latitude_center=59.400000, degrees_from_center=0.1)
-#    {
-#    'lonmin': 18.294550,
-#    'lonmax': 18.361420,
-#    'latmin': 59.397867,
-#    'latmax': 59.414504
-#    }
-    #  'lonmin': 1.306000,
-    #  'lonmax': 1.551819,
-    #  'latmin': 43.527642,
-    #  'latmax': 43.662905
-    #}
+
+
+    longitude_center = 18.330000
+    latitude_center = 59.400000
+    degrees_from_center = 0.1
+    extent = make_map_rectangle(longitude_center=longitude_center,
+        latitude_center=latitude_center,
+        degrees_from_center=degrees_from_center)
 
     dag.set_preferred_provider(provider='airbus-ds')
     #prodTypeList = dag.list_product_types('airbus-ds')
@@ -46,25 +50,24 @@ def main():
     products = dag.search(product_type,startTimeFromAscendingNode='2016-01-17',completionTimeFromAscendingNode='2017-12-20',geometry=extent,cloudCover=1)
     #products = dag.search(product_type)
     for i in range(len(products)):
-        print('{} : {}'.format(i, products[i]))
-    #print(products)
-    product = products[0]
-    xx, yy = product.as_dict()['geometry']['coordinates'][0][4]
+        try:
+            print('{} : {}'.format(i, products[i]))
+            #print(products)
+            product = products[0]
+            xx, yy = product.as_dict()['geometry']['coordinates'][0][4]
 
-    const = 0.05
-    longmin = xx-const
-    latmin = yy-const
-    longmax = xx+const
-    latmax = yy+const
-    print("{}, {}, {}, {}".format(longmin, longmax, latmin, latmax))
+            longmin, latmin, longmax, latmax = subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center)
 
-    VIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B04', extent=(longmin, latmin, longmax, latmax))
-    NIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B08', extent=(longmin, latmin, longmax, latmax))
-    NDVI = (NIR - VIR * 1.) / (NIR + VIR)
+            VIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B04', extent=(longmin, latmin, longmax, latmax))
+            NIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B08', extent=(longmin, latmin, longmax, latmax))
+            NDVI = (NIR - VIR * 1.) / (NIR + VIR)
 
-    plt.imshow(NDVI, cmap='RdYlGn', aspect='auto')
-    hms = datetime.datetime.now().strftime('%H%M%S')
-    plt.savefig('{}/img/ndvi_toulouse-{}.png'.format(base_dir, hms))
+            plt.imshow(NDVI, cmap='RdYlGn', aspect='auto')
+            hms = datetime.datetime.now().strftime('%H%M%S')
+            plt.savefig('{}/img/ndvi_toulouse-{}.png'.format(base_dir, hms))
+        except Exception as e:
+            Print('Exception: {}'.format(e))
+            continue
 
 if __name__ == '__main__':
     main()
