@@ -21,7 +21,7 @@ def make_map_rectangle(longitude_center, latitude_center, degrees_from_center=0.
         }
     return extent
 
-def subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center):
+def subselect(longitude_center, latitude_center, degrees_from_center):
     longmin = longitude_center+degrees_from_center
     latmin = latitude_center+degrees_from_center
     longmax = longitude_center-degrees_from_center
