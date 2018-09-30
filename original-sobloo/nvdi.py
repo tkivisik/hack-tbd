@@ -43,8 +43,12 @@ def main():
     product_type = 'S2_MSI_L1C'
 
 
-    longitude_center = 18.330000
-    latitude_center = 59.400000
+    # Hungary
+    longitude_center = 18.282810
+    latitude_center = 46.127194
+#    # Sweden
+#    longitude_center = 18.330000
+#    latitude_center = 59.400000
     degrees_from_center = 0.1
     extent = make_map_rectangle(longitude_center=longitude_center,
         latitude_center=latitude_center,
@@ -60,7 +64,7 @@ def main():
         try:
             print('{} : {}'.format(i, products[i]))
             #print(products)
-            product = products[0]
+            product = products[i]
             xx, yy = product.as_dict()['geometry']['coordinates'][0][4]
 
             #longmin, latmin, longmax, latmax = subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center)
@@ -74,7 +78,7 @@ def main():
 
             plt.imshow(NDVI, cmap='RdYlGn', aspect='auto')
             hms = datetime.datetime.now().strftime('%H%M%S')
-            plt.savefig('{}/img/ndvi_toulouse-{}.png'.format(base_dir, hms))
+            plt.savefig('{}/img/ndvi-{}.png'.format(base_dir, hms))
         except Exception as e:
             print('Exception: {}'.format(e))
             continue
