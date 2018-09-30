@@ -22,10 +22,10 @@ def make_map_rectangle(longitude_center, latitude_center, degrees_from_center=0.
     return extent
 
 def subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center):
-    longmin = xx+degrees_from_center
-    latmin = yy+degrees_from_center
-    longmax = xx-degrees_from_center
-    latmax = yy-degrees_from_center
+    longmin = longitude_center+degrees_from_center
+    latmin = latitude_center+degrees_from_center
+    longmax = longitude_center-degrees_from_center
+    latmax = latitude_center-degrees_from_center
     print("{}, {}, {}, {}".format(longmin, longmax, latmin, latmax))
     return (longmin, longmax, latmin, latmax)
 
