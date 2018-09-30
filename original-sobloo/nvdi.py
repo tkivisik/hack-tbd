@@ -29,6 +29,13 @@ def subselect(longitude_center, latitude_center, degrees_from_center):
     print("{}, {}, {}, {}".format(longmin, longmax, latmin, latmax))
     return (longmin, longmax, latmin, latmax)
 
+def no_subselect(extent):
+    longmin = extent['lonmin']
+    latmin = extent['latmin']
+    longmax = extent['lonmax']
+    latmax = extent['latmax']
+    return longmin, latmin, longmax, latmax
+
 def main():
     base_dir = '/home/sobloo/hack-tbd/original-sobloo'
     conf_file = base_dir + "/eodagconf.yml"
@@ -56,7 +63,10 @@ def main():
             product = products[0]
             xx, yy = product.as_dict()['geometry']['coordinates'][0][4]
 
-            longmin, latmin, longmax, latmax = subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center)
+            #longmin, latmin, longmax, latmax = subselect(longitude_center=xx, latitude_center=yy, degrees_from_center=degrees_from_center)
+            longmin, latmin, longmax, latmax = no_subselect(extent=extent)
+
+
 
             VIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B04', extent=(longmin, latmin, longmax, latmax))
             NIR = product.get_data(crs='epsg:4326', resolution=0.0001, band='B08', extent=(longmin, latmin, longmax, latmax))
@@ -66,7 +76,7 @@ def main():
             hms = datetime.datetime.now().strftime('%H%M%S')
             plt.savefig('{}/img/ndvi_toulouse-{}.png'.format(base_dir, hms))
         except Exception as e:
-            Print('Exception: {}'.format(e))
+            print('Exception: {}'.format(e))
             continue
 
 if __name__ == '__main__':
