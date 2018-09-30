@@ -49,7 +49,7 @@ def main():
 #    # Sweden
 #    longitude_center = 18.330000
 #    latitude_center = 59.400000
-    degrees_from_center = 0.1
+    degrees_from_center = 0.0035
     extent = make_map_rectangle(longitude_center=longitude_center,
         latitude_center=latitude_center,
         degrees_from_center=degrees_from_center)
@@ -58,7 +58,7 @@ def main():
     #prodTypeList = dag.list_product_types('airbus-ds')
     #print(prodTypeList)
 
-    products = dag.search(product_type,startTimeFromAscendingNode='2016-01-17',completionTimeFromAscendingNode='2017-12-20',geometry=extent,cloudCover=1)
+    products = dag.search(product_type,startTimeFromAscendingNode='2016-01-17',completionTimeFromAscendingNode='2018-09-20',geometry=extent,cloudCover=1)
     #products = dag.search(product_type)
     for i in range(len(products)):
         try:
